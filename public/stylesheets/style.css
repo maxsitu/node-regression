@@ -1,0 +1,44 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+ul {
+    list-style-type: none;
+}
+
+li span {
+    display: inline;
+}
+div.test-item {
+    display: inline;
+}
+
+div.test-item > div {
+    display: inline;
+}
+
+span.success {
+    color: green;
+}
+
+span.failure {
+    color: red;
+}
+
+div > div > div > ul {
+    padding-left: 0px;
+}
+
+div.ivh-treeview > ul > li {
+    padding-left: 0px;
+}
+
+button.disabled {
+    background: purple;
+    color: gray;
+}

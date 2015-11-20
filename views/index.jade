@@ -1,0 +1,20 @@
+extends layout
+doctype html
+block content
+    h1= title
+    p Welcome to #{title}
+    div(ng-app=ngAppName)
+        div(ng-controller="TesterCtrl")
+            hr
+            input(type="text", ng-model="bagSearch")
+            div(ivh-treeview="testItemList",ivh-treeview-filter="bagSearch")
+                script(type="text/ng-template")
+                    div(title="{{trvw.label(node)}}")
+                        span(ivh-treeview-twistie, ng-class="{success: (!node.rc)||node.rc===0, failure: node.rc&&node.rc!=0}")
+                        test-item.ivh-treeview-node-label(ivh-treeview-toggle, item-node="node")
+                        div(ivh-treeview-children)
+
+block script
+    script(src='/modules/angular/angular.js')
+    script(src='/modules/angular-ivh-treeview/dist/ivh-treeview.js')
+    script(src='/javascripts/tester-app.js')

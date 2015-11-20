@@ -1,0 +1,13 @@
+module.exports.define_tester_node = function(err, db){
+    db.settings.set('connection.debug', true);
+    db.settings.set('properties.association_key','pid');
+    var test_root = db.define("TEST_ROOT", {
+        test_root_id      :   {type: 'number', key: true},
+        label   :   {type:'text'},
+        path :   {type:'text'}
+    }, {
+
+    });
+    module.exports.test_root = test_root;
+}
+

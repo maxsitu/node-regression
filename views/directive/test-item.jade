@@ -1,0 +1,20 @@
+//
+   Created by v545192 on 11/3/2015.
+doctype html
+div.test-item
+    div(ng-if="!itemNode.children", )
+        a {{itemNode.label}}
+        button(ng-click="kickOff(itemNode)", ng-disabled="itemNode.isRunning", ng-class="{disabled : itemNode.isRunning}") Run
+            button(ng-click="toggleVisible()") Edit
+            button(ng-click="$log.log('Delete')") Delete
+        div(ng-show="isVisible")
+            text command: {{itemNode.command}}
+            br
+            text rc:      {{itemNode.rc}}
+            br
+            text isRunning: {{itemNode.isRunning}}
+
+    div(ng-if="itemNode.children || !itemNode.command")
+        a {{itemNode.label}}
+        button(ng-show='itemNode.children', ng-click="kickOff(itemNode)", ng-disabled="itemNode.isRunning", ng-class="{disabled : itemNode.isRunning}") Run
+        button(ng-click="$log.log('Add');$event.stopPropagation();") Add
