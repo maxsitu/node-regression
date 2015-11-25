@@ -4,17 +4,15 @@ doctype html
 div.test-item
     div(ng-if="!itemNode.children", )
         a {{itemNode.label}}
-        button(ng-click="kickOff(itemNode)", ng-disabled="itemNode.isRunning", ng-class="{disabled : itemNode.isRunning}") Run
-            button(ng-click="toggleVisible()") Edit
-            button(ng-click="$log.log('Delete')") Delete
+        button(ng-click="kickOff(itemNode, $event)", ng-disabled="itemNode.running", ng-class="{disabled : itemNode.running}") Run
+        button(ng-click="toggleVisible()") Info
         div(ng-show="isVisible")
-            text command: {{itemNode.command}}
+            text cmd: {{itemNode.cmd}}
             br
             text rc:      {{itemNode.rc}}
             br
-            text isRunning: {{itemNode.isRunning}}
+            text running: {{itemNode.running}}
 
-    div(ng-if="itemNode.children || !itemNode.command")
+    div(ng-if="itemNode.children || !itemNode.cmd")
         a {{itemNode.label}}
-        button(ng-show='itemNode.children', ng-click="kickOff(itemNode)", ng-disabled="itemNode.isRunning", ng-class="{disabled : itemNode.isRunning}") Run
-        button(ng-click="$log.log('Add');$event.stopPropagation();") Add
+        button(ng-show='itemNode.children', ng-click="kickOff(itemNode, $event)", ng-disabled="itemNode.running", ng-class="{disabled : itemNode.running}") Run

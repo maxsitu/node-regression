@@ -13,9 +13,10 @@ testerApp.controller('TesterCtrl', ['$rootScope','$scope', '$interval', 'allnode
 }])
     .factory('allnodes', ['$http', function($http) {
         return function (scope) {
-            $http.get('/nodes').then(
+            $http.post('/test/find_all_test_root').then(
                 function (response) {
                     scope.testItemList = response.data;
+                    console.log(response.data);
                 },
                 function(rejection){
                     scope.testItemList = [];
@@ -61,9 +62,13 @@ testerApp.controller('TesterCtrl', ['$rootScope','$scope', '$interval', 'allnode
                     }
                 };
 
-                scope.kickOff = function(node){
+                scope.kickOff = function (node, event) {
                     node.isRunning = true;
-                    $http.post('/run', {node: node}).then(
+                    event.stopPropagation();
+                    var cmd = node.cmd;
+                    if (!cmd)
+                        cmd = node.path;
+                    $http.post('/test/run_test_item_by_cmd', {cmd: cmd}).then(
                         function successCallback(response){
 
                         },
