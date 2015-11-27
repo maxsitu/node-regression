@@ -3,15 +3,15 @@
 doctype html
 div.test-item
     div(ng-if="!itemNode.children", )
-        a {{itemNode.label}}
-        button(ng-click="kickOff(itemNode, $event)", ng-disabled="itemNode.running", ng-class="{disabled : itemNode.running}") Run
-        button(ng-click="toggleVisible()") Info
+        a(ng-click="toggleVisible()") {{itemNode.label}}
         div(ng-show="isVisible")
             text cmd: {{itemNode.cmd}}
             br
             text rc:      {{itemNode.rc}}
             br
             text running: {{itemNode.running}}
+            br
+            button(ng-click="kickOff(itemNode, $event)", ng-disabled="itemNode.running", ng-class="{disabled : itemNode.running}") Run
 
     div(ng-if="itemNode.children || !itemNode.cmd")
         a {{itemNode.label}}
