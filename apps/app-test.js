@@ -33,13 +33,14 @@ var tree_util = require('../util/util-tree');
 var root_label = config.label;
 var root_path = config.root;
 app.use(orm.express('sqlite://' + path.normalize(__dirname + "/../bin/app.sqlite"), {
-    define: function(db, models, next){
+    define: function (db, models, next) {
         models.test_item = db.define("TEST_ITEM", {
             test_item_id: {type: 'number', key: true},
             cmd: {type: 'text'},
             rc: {type: 'number'},
             running: {type: "boolean"}
         }, {
+            cache: false,
             validations: {
                 cmd: [
                     orm.enforce.notEmptyString("Not emptystring"),
@@ -56,6 +57,7 @@ app.use(orm.express('sqlite://' + path.normalize(__dirname + "/../bin/app.sqlite
             end_time: {type: 'date', time: true},
             modify_time: {type: 'date', time: true}
         }, {
+            cache: false,
             methods: {
                 logInfo: function () {
                     console.log(this.test_run_id);

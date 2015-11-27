@@ -1,6 +1,10 @@
 #!'/cygdrive/c/Program Files/nodejs/node'
 var fs = require('fs');
 var path = require('path');
+var dateformat = require('dateformat');
+var config = require('../config');
+var mkdirp = require('mkdirp');
+var dir = require('node-dir');
 
 function getTestTree(loc) {
     files = fs.readdirSync(loc);
@@ -94,32 +98,75 @@ function computeTreeStruct(label, root, test_item_list) {
     return res;
 }
 
-function spawnCommand(cmd, err_cb, close_cb) {
+function spawnCommand(cmd, stdout_cb, stderr_cb, err_cb, close_cb) {
     var spawn = require('child_process').spawn;
     //var proc = spawn(cmd);
     var proc = spawn("echo", [cmd]);
 
     proc.stdout.on('data', function (data) {
-        console.log("STDOUT: ", data.toString());
+        stdout_cb(data);
     });
 
-    proc.stderr.on('date', function (data) {
-        console.error("STDERR: ", data.toString());
+    proc.stderr.on('data', function (data) {
+        stderr_cb(data);
     });
 
     proc.on('error', function (err) {
-        console.error("ERROR:");
-        console.error("code:", err.code);
-        console.error("msg :", err.message);
-
         err_cb(err);
     });
 
     proc.on('close', function (code) {
-        console.log("CLOSE:");
-        console.log("code:", code);
-
         close_cb(code);
     });
 }
-module.exports = {getTestTree: getTestTree, getAllTestCommand: getAllTestCommand, spawnCommand: spawnCommand, computeTreeStruct: computeTreeStruct};
+
+function computeOutputDir(test_dir) {
+    return path.join(config.output, path.relative(config.root, test_dir));
+}
+
+function computeOutput(cmd) {
+    var out_dir = computeOutputDir(path.dirname(cmd));
+    var timestamp_str = dateformat(new Date(), "yyyymmdd_HH-MM-ss-l");
+    var log_file = path.join(out_dir, 'test-' + timestamp_str + ".log");
+    var err_file = path.join(out_dir, 'test-' + timestamp_str + ".log.err");
+    return {stdout: log_file,
+        stderr: err_file
+    };
+}
+
+function createOutputFile(file, cb) {
+    mkdirp(path.dirname(file), function (err, made) {
+        if (err)
+            throw err;
+        fs.open(file, 'a', function (err, fd) {
+            if (err)
+                throw err;
+            cb(file, fd);
+        });
+    });
+}
+
+function outputFiles(cmd, cb) {
+    var out_dir = computeOutputDir(path.dirname(cmd));
+    dir.files(out_dir, function (err, files) {
+        if (err) throw err;
+        files = files.filter(function (file) {
+            basename = path.basename(file);
+            var res = basename.match(/^test-\d\d\d\d\d\d\d\d_\d\d-\d\d-\d\d-\d\d\d\.log(?:\.err)?$/);
+            return (res && res.length > 0);
+        });
+        files.sort();
+        files.reverse();
+        cb(files);
+    });
+}
+
+module.exports = {
+    getTestTree: getTestTree,
+    getAllTestCommand: getAllTestCommand,
+    spawnCommand: spawnCommand,
+    computeTreeStruct: computeTreeStruct,
+    computeOutput: computeOutput,
+    createOutputFile: createOutputFile,
+    outputFiles: outputFiles
+};

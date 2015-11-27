@@ -15,4 +15,4 @@ div.test-item
 
     div(ng-if="itemNode.children || !itemNode.cmd")
         a {{itemNode.label}}
-        button(ng-show='itemNode.children', ng-click="kickOff(itemNode, $event)", ng-disabled="itemNode.running", ng-class="{disabled : itemNode.running}") Run
+        button(ng-show='itemNode.children', ng-click="kickOff(itemNode, $event)", ng-disabled="isRunning(itemNode)", ng-class="{disabled : isRunning(itemNode)}") Run
