@@ -6,37 +6,6 @@ var config = require('../config');
 var mkdirp = require('mkdirp');
 var dir = require('node-dir');
 
-function getTestTree(loc) {
-    files = fs.readdirSync(loc);
-    var children = [];
-    var res = null;
-    files.forEach(function (value) {
-        var p = path.join(loc, value);
-        var lstat = fs.lstatSync(p);
-        if (value.match("^test\\..?.?$") && !lstat.isDirectory()) {
-            if (!res) {
-                res = {label: path.basename(loc), scripts: [p]};
-            }
-            else {
-                res['scripts'].push(p);
-            }
-        }
-        else if (lstat.isDirectory()) {
-            var kid = getTestTree(p);
-            if (kid) {
-                children.push(kid);
-            }
-        }
-    });
-    if (children.length > 0) {
-        if (!res) {
-            res = {label: path.basename(loc)};
-        }
-        res["children"] = children;
-    }
-    return res;
-}
-
 function getAllTestCommand(loc) {
     files = fs.readdirSync(loc);
     var res = [];
@@ -100,8 +69,8 @@ function computeTreeStruct(label, root, test_item_list) {
 
 function spawnCommand(cmd, stdout_cb, stderr_cb, err_cb, close_cb) {
     var spawn = require('child_process').spawn;
-    //var proc = spawn(cmd);
-    var proc = spawn("echo", [cmd]);
+    var proc = spawn(cmd);
+    //var proc = spawn("echo", [cmd]);
 
     proc.stdout.on('data', function (data) {
         stdout_cb(data);
@@ -162,7 +131,6 @@ function outputFiles(cmd, cb) {
 }
 
 module.exports = {
-    getTestTree: getTestTree,
     getAllTestCommand: getAllTestCommand,
     spawnCommand: spawnCommand,
     computeTreeStruct: computeTreeStruct,

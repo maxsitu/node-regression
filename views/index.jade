@@ -6,7 +6,7 @@ block content
     div(ng-app=ngAppName)
         div(ng-controller="TesterCtrl")
             hr
-            input(type="text", ng-model="bagSearch")
+            input(type="text", ng-model="bagSearch" ng-hide="true")
             div(ivh-treeview="testItemList",ivh-treeview-filter="bagSearch")
                 script(type="text/ng-template")
                     div(title="{{trvw.label(node)}}")

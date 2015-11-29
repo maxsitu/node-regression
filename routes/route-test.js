@@ -9,15 +9,18 @@ var orm = require('orm');
 var express = require('express');
 var router = express.Router();
 
-router.post('/find_all_test_root', function (req, res) {
+router.post('/find_all_test_items', function (req, res) {
 
-    req.models.test_item.find({}, function (err, test_item_list) {
+    req.models.test_item.find({cmd: orm.like(config.root + '%')}, function (err, test_item_list) {
         if (err) {
             res.status(202).send(err.message);
         }
         else {
-            var formated_tree = tree_util.computeTreeStruct(config.label, config.root, test_item_list);
-            res.status(200).send(formated_tree);
+            //var formated_tree = tree_util.computeTreeStruct(config.label, config.root, test_item_list);
+            test_item_list.forEach(function (test_item) {
+                test_item.label = path.join(config.label, path.relative(config.root, path.dirname(test_item.cmd)));
+            });
+            res.status(200).send(test_item_list);
         }
 
     });

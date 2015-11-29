@@ -34,10 +34,55 @@ testerApp.controller('TesterCtrl', ['$rootScope', '$scope', '$interval', 'allnod
             return node.fail;
         };
 
+        function buildTree(map) {
+            var apply = function (parent, path, tokens) {
+                if (tokens.length == 0) return;
+                var token = tokens.shift();
+                if (path.length == 0)
+                    path = token;
+                else
+                    path = path.concat('/' + token);
+                if (!parent.children) {
+                    parent.children = [];
+                }
+                if (!(path in map)) {
+                    map[path] = {label: token};
+                }
+                parent.children.push(map[path]);
+                apply(map[path], path, tokens);
+            };
+            var paths = Object.keys(map);
+            var container = new Object();
+            paths.forEach(function (path) {
+                var tokens = path.split('/');
+                apply(container, '', tokens);
+            });
+            return container.children[0];
+        }
+
+        var update = function (scope, items) {
+            if (!scope.node_map || !scope.testItemList) {
+                scope.node_map = {};
+                items.forEach(function (item) {
+                    scope.node_map[item.label] = item;
+                    item.label = item.label.split('/').pop();
+                });
+                scope.testItemList = buildTree(scope.node_map);
+            } else {
+                items.forEach(function (item) {
+                    if (item.label in scope.node_map) {
+                        var rcd = scope.node_map[item.label];
+                        rcd.rc = item.rc;
+                        rcd.running = item.running;
+                    }
+                });
+            }
+        };
+
         return function (scope) {
-            $http.post('/test/find_all_test_root').then(
+            $http.post('/test/find_all_test_items').then(
                 function (response) {
-                    scope.testItemList = response.data;
+                    update(scope, response.data);
                     markFailure(scope.testItemList);
                     console.log(response.data);
                 },
@@ -86,7 +131,16 @@ testerApp.controller('TesterCtrl', ['$rootScope', '$scope', '$interval', 'allnod
                 };
 
                 scope.kickOff = function (node, event) {
-                    node.isRunning = true;
+                    function setRun(node) {
+                        node.running = true;
+                        if (node.children) {
+                            for (var i = 0; i < node.children.length; i++) {
+                                setRun(node.children[i]);
+                            }
+                        }
+                    }
+
+                    setRun(node);
                     event.stopPropagation();
                     var cmd = node.cmd;
                     if (!cmd)
