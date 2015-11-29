@@ -11,7 +11,7 @@ div.test-item
             br
             text running: {{itemNode.running}}
             br
-            button(ng-click="kickOff(itemNode, $event)", ng-disabled="itemNode.running", ng-class="{disabled : itemNode.running}") Run
+            button(ng-click="kickOff(itemNode, $event)", ng-disabled="isRunning(itemNode)", ng-class="{disabled : isRunning(itemNode)}") Run
 
     div(ng-if="itemNode.children || !itemNode.cmd")
         a {{itemNode.label}}

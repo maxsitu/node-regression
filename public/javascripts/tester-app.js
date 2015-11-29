@@ -48,6 +48,7 @@ testerApp.controller('TesterCtrl', ['$rootScope', '$scope', '$interval', 'allnod
                 if (!(path in map)) {
                     map[path] = {label: token};
                 }
+                map[path]["path"] = path;
                 parent.children.push(map[path]);
                 apply(map[path], path, tokens);
             };
@@ -156,8 +157,6 @@ testerApp.controller('TesterCtrl', ['$rootScope', '$scope', '$interval', 'allnod
                 };
 
                 scope.isRunning = function (node) {
-                    if (node.running)
-                        return true;
                     if (node.children) {
                         for (var i = 0; i < node.children.length; i++) {
                             var child = node.children[i];
@@ -166,6 +165,10 @@ testerApp.controller('TesterCtrl', ['$rootScope', '$scope', '$interval', 'allnod
                         }
                         return true;
                     }
+
+                    if (node.running)
+                        return true;
+
                     return false;
                 };
 

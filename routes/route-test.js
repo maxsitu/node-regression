@@ -29,7 +29,7 @@ router.post('/find_all_test_items', function (req, res) {
 router.post('/run_test_item_by_cmd', function (req, res) {
     var cmd = req.body.cmd;
     var body = [];
-
+    cmd = path.join(config.root, path.relative(config.label, cmd));
     req.models.test_item.find({cmd: orm.like(cmd + "%")}, function (err, tis) {
         if (err) {
             body.push({success: false, cmd: cmd + "%", msg: err.message});
