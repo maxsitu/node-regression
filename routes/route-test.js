@@ -20,7 +20,7 @@ router.post('/find_all_test_items', function (req, res) {
             test_item_list.forEach(function (test_item) {
                 test_item.label = path.join(config.label, path.relative(config.root, path.dirname(test_item.cmd)));
             });
-            res.status(200).send(test_item_list);
+            res.status(200).send({sep: path.sep, list: test_item_list});
         }
 
     });

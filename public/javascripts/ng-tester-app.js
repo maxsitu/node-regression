@@ -34,14 +34,14 @@ testerApp.controller('TesterCtrl', ['$rootScope', '$scope', '$interval', 'allnod
             return node.fail;
         };
 
-        function buildTree(map) {
+        function buildTree(sep, map) {
             var apply = function (parent, path, tokens) {
                 if (tokens.length == 0) return;
                 var token = tokens.shift();
                 if (path.length == 0)
                     path = token;
                 else
-                    path = path.concat('/' + token);
+                    path = path.concat(sep + token);
                 if (!parent.children) {
                     parent.children = [];
                 }
@@ -55,20 +55,20 @@ testerApp.controller('TesterCtrl', ['$rootScope', '$scope', '$interval', 'allnod
             var paths = Object.keys(map);
             var container = new Object();
             paths.forEach(function (path) {
-                var tokens = path.split('/');
+                var tokens = path.split(sep);
                 apply(container, '', tokens);
             });
             return container.children[0];
         }
 
-        var update = function (scope, items) {
+        var update = function (scope, sep, items) {
             if (!scope.node_map || !scope.testItemList) {
                 scope.node_map = {};
                 items.forEach(function (item) {
                     scope.node_map[item.label] = item;
-                    item.label = item.label.split('/').pop();
+                    item.label = item.label.split(sep).pop();
                 });
-                scope.testItemList = buildTree(scope.node_map);
+                scope.testItemList = buildTree(sep, scope.node_map);
             } else {
                 items.forEach(function (item) {
                     if (item.label in scope.node_map) {
@@ -83,7 +83,7 @@ testerApp.controller('TesterCtrl', ['$rootScope', '$scope', '$interval', 'allnod
         return function (scope) {
             $http.post('/test/find_all_test_items').then(
                 function (response) {
-                    update(scope, response.data);
+                    update(scope, response.data.sep, response.data.list);
                     markFailure(scope.testItemList);
                     console.log(response.data);
                 },
