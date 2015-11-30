@@ -193,10 +193,13 @@ testerApp.service('selectTestItem', ['$http', function ($http) {
         };
 
         return function (scope) {
-            var keys = Object.keys(scope.selected);
-            keys.forEach(function (key) {
-                delete scope.selected[key];
-            });
+            if (!scope.node_map || !scope.testItemList) {
+                var keys = Object.keys(scope.selected);
+                keys.forEach(function (key) {
+                    delete scope.selected[key];
+                });
+                scope.filecontent = '';
+            }
             $http.post('/test/find_all_test_items').then(
                 function (response) {
                     update(scope, response.data.sep, response.data.list);
