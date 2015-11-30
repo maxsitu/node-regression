@@ -150,8 +150,18 @@ testerApp.service('selectTestItem', ['$http', function ($http) {
                 if (!(path in map)) {
                     map[path] = {label: token};
                 }
+                var flag = false;
+                for (var i = 0; i < parent.children.length; i++) {
+                    if (parent.children[i].path == path) {
+                        flag = true;
+                        break;
+                    }
+                }
+
+                if (!flag) {
+                    parent.children.push(map[path]);
+                }
                 map[path]["path"] = path;
-                parent.children.push(map[path]);
                 apply(map[path], path, tokens);
             };
             var paths = Object.keys(map);
