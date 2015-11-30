@@ -16,9 +16,10 @@ block content
                             div(ivh-treeview-children)
             div#outfile-list(class="framebox")
                 div.relative
-                    a
-                        b(ng-if="selected.outfiles") {{selected.item.label}}
-                        b(ng-if="!selected.outfiles") {{selected.item.path}}
+                    a(ng-if="selected.outfiles")
+                        b {{selected.item.label}}
+                    a(ng-if="!selected.outfiles")
+                        b {{selected.item.path}}
                     button(ng-if="selected.outfiles", ng-click="kickOff($event)", ng-disabled="isRunning()", ng-class="{disabled : isRunning()}") Run
                     button(ng-if="selected.item && !selected.outfiles", ng-click="kickOff($event)", ng-disabled="isRunning()", ng-class="{disabled : isRunning()}") Run All
                 ul
