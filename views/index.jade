@@ -26,7 +26,7 @@ block content
                     li(ng-repeat="row in selected.outfiles")
                         a(ng-click='showContent(row.loc)') {{row.label}}
             div#outfile-content(class="framebox")
-                {{filecontent}}
+                pre {{filecontent}}
 block script
     script(src='/modules/angular/angular.js')
     script(src='/modules/angular-ivh-treeview/dist/ivh-treeview.js')
