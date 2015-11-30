@@ -76,7 +76,10 @@ testerApp.service('selectTestItem', ['$http', function ($http) {
         'filecontent',
         'kickoff', function ($rootScope, $scope, $interval, allnodes, selectTestItem, filecontent, kickoff) {
             $scope.selected = selectTestItem.selected;
-            $scope.select = selectTestItem.select;
+
+            $scope.select = function (testItem) {
+                selectTestItem.select(testItem);
+            };
 
             $scope.showContent = function (loc) {
                 filecontent.showContent(loc, $scope);
@@ -254,6 +257,26 @@ testerApp.service('selectTestItem', ['$http', function ($http) {
                     }
                 };
 
+                scope.isRunning = function () {
+                    var apply = function (node) {
+                        if (!node)
+                            return false;
+                        if (node.children) {
+                            for (var i = 0; i < node.children.length; i++) {
+                                var child = node.children[i];
+                                if (!apply(child))
+                                    return false;
+                            }
+                            return true;
+                        }
+
+                        if (node.running)
+                            return true;
+
+                        return false;
+                    };
+                    return apply(scope.itemNode);
+                };
 
                 element.bind('click', function (event) {
                     event.stopPropagation();

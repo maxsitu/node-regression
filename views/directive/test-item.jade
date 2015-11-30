@@ -1,7 +1,7 @@
 //
    Created by v545192 on 11/3/2015.
 doctype html
-div.test-item
+div.test-item(ng-class="{success: !itemNode.fail, failure: itemNode.fail, running: isRunning()}")
     div(ng-if="!itemNode.children" )
         a(ng-click="select(itemNode)") {{itemNode.label}}
 

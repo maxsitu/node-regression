@@ -1,3 +1,79 @@
+@keyframes success-running {
+    0% {
+        background-color: green;
+    }
+    50% {
+        background-color: chartreuse;
+    }
+    100% {
+        background-color: green;
+    }
+}
+
+@-webkit-keyframes success-running {
+    0% {
+        background-color: green;
+    }
+    50% {
+        background-color: chartreuse;
+    }
+    100% {
+        background-color: green;
+    }
+}
+
+@keyframes failure-running {
+    0% {
+        background-color: red;
+    }
+    50% {
+        background-color: pink;
+    }
+    100% {
+        background-color: red;
+    }
+}
+
+@-webkit-keyframes failure-running {
+    0% {
+        background-color: red;
+    }
+    50% {
+        background-color: pink;
+    }
+    100% {
+        background-color: red;
+    }
+}
+
+div.success.running {
+    background-color: green;
+    animation-name: success-running;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+    -webkit-animation-name: success-running;
+    -webkit-animation-duration: 4s;
+    -webkit-animation-iteration-count: infinite;
+}
+
+div.failure.running {
+    background-color: red;
+    animation-name: failure-running;
+    animation-duration: 4s;
+    animation-iteration-count: infinite;
+    -webkit-animation-name: failure-running;
+    -webkit-animation-duration: 4s;
+    -webkit-animation-iteration-count: infinite;
+}
+
+span.success {
+    color: green;
+}
+
+span.failure {
+    color: red;
+}
+
 body {
     padding: 50px;
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -21,14 +97,6 @@ div.test-item {
 
 div.test-item > div {
     display: inline;
-}
-
-span.success {
-    color: green;
-}
-
-span.failure {
-    color: red;
 }
 
 div > div > div > ul {

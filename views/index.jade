@@ -11,7 +11,7 @@ block content
                 div(ivh-treeview="testItemList",ivh-treeview-filter="bagSearch")
                     script(type="text/ng-template")
                         div(title="{{trvw.label(node)}}")
-                            span(ivh-treeview-twistie, ivh-treeview-toggle, ng-class="{success: !node.fail, failure: node.fail}")
+                            span(ivh-treeview-twistie, ivh-treeview-toggle, ng-class="{success: !node.fail, failure: node.fail, running: node.running}")
                             test-item.ivh-treeview-node-label( item-node="node")
                             div(ivh-treeview-children)
             div#outfile-list(class="framebox")
