@@ -44,15 +44,29 @@ button.disabled {
     color: gray;
 }
 
-a {
+div#test-tree a {
     display: inline-block;
     width: 150px;
 }
 
 div.framebox {
     display: inline-block;
-    width: 300px;
+    padding-right: 10px;
+    width: 400px;
     height: 1000px;
     overflow-x: auto;
     overflow-y: auto;
+}
+
+div.framebox div {
+    position: relative;
+}
+
+div.framebox button {
+    position: absolute;
+    right: 0px;
+}
+
+div#outfile-content.framebox {
+    width: 600px;
 }

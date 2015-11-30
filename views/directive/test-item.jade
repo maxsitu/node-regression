@@ -2,17 +2,8 @@
    Created by v545192 on 11/3/2015.
 doctype html
 div.test-item
-    div(ng-if="!itemNode.children", )
-        a(ng-click="toggleVisible()") {{itemNode.label}}
-        div(ng-show="isVisible")
-            text cmd: {{itemNode.cmd}}
-            br
-            text rc:      {{itemNode.rc}}
-            br
-            text running: {{itemNode.running}}
-            br
-            button(ng-click="kickOff(itemNode, $event)", ng-disabled="isRunning(itemNode)", ng-class="{disabled : isRunning(itemNode)}") Run
+    div(ng-if="!itemNode.children" )
+        a(ng-click="select(itemNode)") {{itemNode.label}}
 
     div(ng-if="itemNode.children || !itemNode.cmd")
-        a {{itemNode.label}}
-        button(ng-show='itemNode.children', ng-click="kickOff(itemNode, $event)", ng-disabled="isRunning(itemNode)", ng-class="{disabled : isRunning(itemNode)}") Run
+        a(ng-click="select(itemNode)") {{itemNode.label}}

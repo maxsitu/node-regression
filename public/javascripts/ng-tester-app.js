@@ -3,16 +3,118 @@
  * App script for tester page
  */
 var testerApp = angular.module('testerApp', ['ivh.treeview']);
-testerApp.controller('TesterCtrl', ['$rootScope', '$scope', '$interval', 'allnodes', function ($rootScope, $scope, $interval, allnodes) {
-    $rootScope.visibleScope = undefined;
-    allnodes($scope);
+testerApp.service('selectTestItem', ['$http', function ($http) {
+    this.selected = {};
+    this.select = function (selected) {
+        return function (testItem) {
+            if (selected.item && selected.item == testItem) {
+                return;
+            }
+            selected.item = testItem;
+            if (testItem.cmd) {
+                $http.post('/test/output_files', {cmd: testItem.cmd}).then(
+                    function successCallback(response) {
+                        selected.outfiles = [];
+                        response.data.forEach(function (row) {
+                            selected.outfiles.push(row);
+                        });
+                    },
+                    function errorCallback(response) {
 
-    $interval(function () {
-        allnodes($scope);
-    }, 15000);
-
-
+                    }
+                );
+            } else {
+                selected.item = testItem;
+                delete selected['outfiles'];
+            }
+        };
+    }(this.selected);
 }])
+    .service('filecontent', ['$http', function ($http) {
+        this.showContent = function (loc, scope) {
+            $http.post('/test/file_content', {file: loc})
+                .then(function successCb(response) {
+                    scope.filecontent = response.data.content;
+                },
+                function errorCb(response) {
+
+                });
+        };
+    }])
+    .service('kickoff', ['$http', function ($http) {
+        this.kickOff = function (testItem, event) {
+            function setRun(node) {
+                node.running = true;
+                if (node.children) {
+                    for (var i = 0; i < node.children.length; i++) {
+                        setRun(node.children[i]);
+                    }
+                }
+            }
+
+            setRun(testItem);
+            event.stopPropagation();
+            var cmd = testItem.cmd;
+            if (!cmd)
+                cmd = testItem.path;
+            $http.post('/test/run_test_item_by_cmd', {cmd: cmd}).then(
+                function successCallback(response) {
+
+                },
+                function errorCallback(response) {
+
+                }
+            );
+        };
+    }])
+    .controller('TesterCtrl', [
+        '$rootScope',
+        '$scope',
+        '$interval',
+        'allnodes',
+        'selectTestItem',
+        'filecontent',
+        'kickoff', function ($rootScope, $scope, $interval, allnodes, selectTestItem, filecontent, kickoff) {
+            $scope.selected = selectTestItem.selected;
+            $scope.select = selectTestItem.select;
+
+            $scope.showContent = function (loc) {
+                filecontent.showContent(loc, $scope);
+            };
+
+            $scope.kickOff = function (event) {
+                kickoff.kickOff($scope.selected.item, event);
+            };
+
+            $scope.isRunning = function () {
+                var apply = function (node) {
+                    if (!node)
+                        return false;
+                    if (node.children) {
+                        for (var i = 0; i < node.children.length; i++) {
+                            var child = node.children[i];
+                            if (!apply(child))
+                                return false;
+                        }
+                        return true;
+                    }
+
+                    if (node.running)
+                        return true;
+
+                    return false;
+                };
+                return apply($scope.selected.item);
+            };
+            $rootScope.visibleScope = undefined;
+            allnodes($scope);
+
+            $interval(function () {
+                allnodes($scope);
+            }, 15000);
+
+
+        }])
     .factory('allnodes', ['$http', function ($http) {
 
         var markFailure = function (node) {
@@ -81,11 +183,14 @@ testerApp.controller('TesterCtrl', ['$rootScope', '$scope', '$interval', 'allnod
         };
 
         return function (scope) {
+            var keys = Object.keys(scope.selected);
+            keys.forEach(function (key) {
+                delete scope.selected[key];
+            });
             $http.post('/test/find_all_test_items').then(
                 function (response) {
                     update(scope, response.data.sep, response.data.list);
                     markFailure(scope.testItemList);
-                    console.log(response.data);
                 },
                 function (rejection) {
                     scope.testItemList = [];
@@ -95,11 +200,7 @@ testerApp.controller('TesterCtrl', ['$rootScope', '$scope', '$interval', 'allnod
         }
 
     }])
-    //.service('selectTestItem', [function(){
-    //    this.select = function (testItem) {
-    //
-    //    };
-    //}])
+
     .config(function (ivhTreeviewOptionsProvider) {
         ivhTreeviewOptionsProvider.set({
             twistieCollapsedTpl: '<span class="glyphicon glyphicon-chevron-right"></span>',
@@ -111,7 +212,7 @@ testerApp.controller('TesterCtrl', ['$rootScope', '$scope', '$interval', 'allnod
 
         });
     })
-    .directive('testItem', ['$document', '$rootScope', '$log', '$http', function ($document, $rootScope, $log, $http) {
+    .directive('testItem', ['$document', '$rootScope', '$log', '$http', 'selectTestItem', function ($document, $rootScope, $log, $http, selectTestItem) {
         return {
             restrict: 'E',
             scope: {
@@ -121,6 +222,9 @@ testerApp.controller('TesterCtrl', ['$rootScope', '$scope', '$interval', 'allnod
             link: function (scope, element, attr) {
                 scope.isVisible = false;
                 scope.$log = $log;
+                scope.select = function (testItem) {
+                    selectTestItem.select(testItem);
+                };
                 scope.toggleVisible = function () {
                     scope.isVisible = !scope.isVisible;
                     if (scope.isVisible) {
@@ -136,46 +240,6 @@ testerApp.controller('TesterCtrl', ['$rootScope', '$scope', '$interval', 'allnod
                     }
                 };
 
-                scope.kickOff = function (node, event) {
-                    function setRun(node) {
-                        node.running = true;
-                        if (node.children) {
-                            for (var i = 0; i < node.children.length; i++) {
-                                setRun(node.children[i]);
-                            }
-                        }
-                    }
-
-                    setRun(node);
-                    event.stopPropagation();
-                    var cmd = node.cmd;
-                    if (!cmd)
-                        cmd = node.path;
-                    $http.post('/test/run_test_item_by_cmd', {cmd: cmd}).then(
-                        function successCallback(response) {
-
-                        },
-                        function errorCallback(response) {
-
-                        }
-                    );
-                };
-
-                scope.isRunning = function (node) {
-                    if (node.children) {
-                        for (var i = 0; i < node.children.length; i++) {
-                            var child = node.children[i];
-                            if (!scope.isRunning(child))
-                                return false;
-                        }
-                        return true;
-                    }
-
-                    if (node.running)
-                        return true;
-
-                    return false;
-                };
 
                 element.bind('click', function (event) {
                     event.stopPropagation();

@@ -40,7 +40,7 @@ function build_close_cb(test_item, test_run, log, logfd, errlog, errlogfd) {
             if (save_err) throw save_err;
         });
 
-        require('fs').appendFile(log, "RC = " + code, function (err) {
+        require('fs').appendFile(log, "\nRC = " + code, function (err) {
             if (err) {
                 console.error("ERROR appending to file: ");
                 console.error("code:", err.code);

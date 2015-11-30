@@ -125,10 +125,20 @@ router.post('/run_test_item_by_cmd', function (req, res) {
 });
 
 router.post('/output_files', function (req, res) {
+    console.log('/output_files');
     var cmd = req.body.cmd;
+    console.log('cmd: ', cmd);
     tree_util.outputFiles(cmd, function (files) {
+        console.log('OUTPUT files: ');
         console.log(files);
-        res.send(files);
+        result = [];
+        files.forEach(function (file) {
+            var row = {};
+            row.label = path.basename(file);
+            row.loc = file;
+            result.push(row);
+        });
+        res.send(result);
     });
 
 });
