@@ -185,7 +185,8 @@ testerApp.service('selectTestItem', ['$http', function ($http) {
                 items.forEach(function (item) {
                     if (item.label in scope.node_map) {
                         var rcd = scope.node_map[item.label];
-                        rcd.rc = item.rc;
+                        if (item.rc)
+                            rcd.rc = item.rc;
                         rcd.running = item.running;
                     }
                 });
