@@ -95,6 +95,11 @@ testerApp.controller('TesterCtrl', ['$rootScope', '$scope', '$interval', 'allnod
         }
 
     }])
+    //.service('selectTestItem', [function(){
+    //    this.select = function (testItem) {
+    //
+    //    };
+    //}])
     .config(function (ivhTreeviewOptionsProvider) {
         ivhTreeviewOptionsProvider.set({
             twistieCollapsedTpl: '<span class="glyphicon glyphicon-chevron-right"></span>',
