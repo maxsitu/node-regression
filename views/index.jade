@@ -16,9 +16,9 @@ block content
                             div(ivh-treeview-children)
             div#outfile-list(class="framebox")
                 div.relative
-                    a(ng-if="selected.outfiles")
+                    div(ng-if="selected.outfiles")
                         b {{selected.item.label}}
-                    a(ng-if="!selected.outfiles")
+                    div(ng-if="!selected.outfiles")
                         b {{selected.item.path}}
                     button(ng-if="selected.outfiles", ng-click="kickOff($event)", ng-disabled="isRunning()", ng-class="{disabled : isRunning(), btn:true, 'btn-sm':true, 'btn-success':true}")
                         span(ng-class="{glyphicon:true, 'glyphicon-refresh':true, 'glyphicon-refresh-animate':isRunning()}")

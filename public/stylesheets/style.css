@@ -127,6 +127,11 @@ div.test-item a {
     cursor: pointer;
 }
 
+div#outfile-list a {
+    cursor: hand;
+    cursor: pointer;
+}
+
 div > div > div > ul {
     padding-left: 0px;
 }
