@@ -122,6 +122,11 @@ div.test-item > div {
     display: inline;
 }
 
+div.test-item a {
+    cursor: hand;
+    cursor: pointer;
+}
+
 div > div > div > ul {
     padding-left: 0px;
 }
