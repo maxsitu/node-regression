@@ -4,9 +4,9 @@ block content
     h1= title
     p Welcome to #{title}
     div(ng-app=ngAppName)
-        div(ng-controller="TesterCtrl")
+        div.row(ng-controller="TesterCtrl")
             hr
-            div#test-tree(class="framebox")
+            div#test-tree.col-xs-12.col-sm5.col-md-3(class="framebox")
                 input(type="text", ng-model="bagSearch" ng-hide="true")
                 div(ivh-treeview="testItemList",ivh-treeview-filter="bagSearch")
                     script(type="text/ng-template")
@@ -14,22 +14,24 @@ block content
                             span(ivh-treeview-twistie, ivh-treeview-toggle, ng-class="{success: !node.fail, failure: node.fail, running: node.running}")
                             test-item.ivh-treeview-node-label( item-node="node")
                             div(ivh-treeview-children)
-            div#outfile-list(class="framebox")
+            div#outfile-list.col-xs-12.col-sm-7.col-md-3(class="framebox")
                 div.relative
                     div(ng-if="selected.outfiles")
                         b {{selected.item.label}}
+                        button.btn.btn-sm.btn-success(ng-if="selected.outfiles", ng-click="kickOff($event)", ng-disabled="isRunning()", ng-class="{disabled : isRunning()}")
+                            span(ng-class="{glyphicon:true, 'glyphicon-refresh':true, 'glyphicon-refresh-animate':isRunning()}")
+                            | Run
                     div(ng-if="!selected.outfiles")
                         b {{selected.item.path}}
-                    button(ng-if="selected.outfiles", ng-click="kickOff($event)", ng-disabled="isRunning()", ng-class="{disabled : isRunning(), btn:true, 'btn-sm':true, 'btn-success':true}")
-                        span(ng-class="{glyphicon:true, 'glyphicon-refresh':true, 'glyphicon-refresh-animate':isRunning()}")
-                        | Run
-                    button(ng-if="selected.item && !selected.outfiles", ng-click="kickOff($event)", ng-disabled="isRunning()", ng-class="{disabled : isRunning(), btn:true, 'btn-sm':true, 'btn-success':true}")
-                        span(ng-class="{glyphicon:true, 'glyphicon-refresh':true, 'glyphicon-refresh-animate':isRunning()}")
-                        | Run All
+                        button.btn.btn-sm.btn-success(ng-if="selected.item && !selected.outfiles", ng-click="kickOff($event)", ng-disabled="isRunning()", ng-class="{disabled : isRunning()}")
+                            span(ng-class="{glyphicon:true, 'glyphicon-refresh':true, 'glyphicon-refresh-animate':isRunning()}")
+                            | Run All
+
+
                 ul
                     li(ng-repeat="row in selected.outfiles")
                         a(ng-click='showContent(row.loc)') {{row.label}}
-            div#outfile-content(class="framebox")
+            div#outfile-content.col-sm-12.col-md-8(class="framebox")
                 pre {{filecontent}}
 block script
     script(src='/modules/angular/angular.js')

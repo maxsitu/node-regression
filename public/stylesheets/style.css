@@ -153,10 +153,10 @@ div#test-tree a {
 div.framebox {
     display: inline-block;
     padding-right: 10px;
-    width: 400px;
-    height: 1000px;
+    /*width: 400px;*/
     overflow-x: auto;
     overflow-y: auto;
+    max-height: 700px;
 }
 
 div.framebox div {
