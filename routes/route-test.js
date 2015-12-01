@@ -45,7 +45,7 @@ router.post('/run_test_item_by_cmd', function (req, res) {
             var cnt = tis.length;
             var sendback = function (status) {
                 cnt--;
-                if (cnt <= 0) {
+                if (cnt == 0) {
                     res.status(status).send(body);
                 }
             };

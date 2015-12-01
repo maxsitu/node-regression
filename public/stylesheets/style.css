@@ -1,69 +1,69 @@
-@keyframes success-running {
+@-webkit-keyframes moving {
     0% {
-        background-color: green;
+        background-position: 0% 50%
     }
     50% {
-        background-color: chartreuse;
+        background-position: -100% 50%
     }
     100% {
-        background-color: green;
+        background-position: -200% 50%
     }
 }
 
-@-webkit-keyframes success-running {
+@-moz-keyframes moving {
     0% {
-        background-color: green;
+        background-position: 0% 50%
     }
     50% {
-        background-color: chartreuse;
+        background-position: -100% 50%
     }
     100% {
-        background-color: green;
+        background-position: -200% 50%
     }
 }
 
-@keyframes failure-running {
+@-o-keyframes moving {
     0% {
-        background-color: red;
+        background-position: 0% 50%
     }
     50% {
-        background-color: pink;
+        background-position: -100% 50%
     }
     100% {
-        background-color: red;
+        background-position: -200% 50%
     }
 }
 
-@-webkit-keyframes failure-running {
+@keyframes moving {
     0% {
-        background-color: red;
+        background-position: 0% 50%
     }
     50% {
-        background-color: pink;
+        background-position: -100% 50%
     }
     100% {
-        background-color: red;
+        background-position: -200% 50%
     }
 }
 
 div.success.running {
-    background-color: green;
-    animation-name: success-running;
-    animation-duration: 4s;
-    animation-iteration-count: infinite;
-    -webkit-animation-name: success-running;
-    -webkit-animation-duration: 4s;
-    -webkit-animation-iteration-count: infinite;
+    background: linear-gradient(270deg, #cdf99b, #aff57f, #25e15e, #25e15e, #aff57f, #cdf99b);
+    background-repeat: repeat-x;
+    background-size: 200% 100%;
+    -webkit-animation: moving 4s linear infinite;
+    -moz-animation: moving 4s linear infinite;
+    -o-animation: moving 4s linear infinite;
+    animation: moving 4s linear infinite;
 }
 
 div.failure.running {
-    background-color: red;
-    animation-name: failure-running;
-    animation-duration: 4s;
-    animation-iteration-count: infinite;
-    -webkit-animation-name: failure-running;
-    -webkit-animation-duration: 4s;
-    -webkit-animation-iteration-count: infinite;
+    background: linear-gradient(270deg, #f2c3de, #ff95da, #ed64a5, #ed64a5, #ff95da, #f2c3de);
+    background-repeat: repeat-x;
+    background-size: 200% 100%;
+    -webkit-animation: moving 4s linear infinite;
+    -moz-animation: moving 4s linear infinite;
+    -o-animation: moving 4s linear infinite;
+    animation: moving 4s linear infinite;
 }
 
 span.success {
