@@ -118,7 +118,10 @@ function createOutputFile(file, cb) {
 function outputFiles(cmd, cb) {
     var out_dir = computeOutputDir(path.dirname(cmd));
     dir.files(out_dir, function (err, files) {
-        if (err) throw err;
+        if (err) {
+            cb([]);
+            return;
+        }
         files = files.filter(function (file) {
             basename = path.basename(file);
             var res = basename.match(/^test-\d\d\d\d\d\d\d\d_\d\d-\d\d-\d\d-\d\d\d\.log(?:\.err)?$/);
