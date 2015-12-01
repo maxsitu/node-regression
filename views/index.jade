@@ -20,8 +20,10 @@ block content
                         b {{selected.item.label}}
                     a(ng-if="!selected.outfiles")
                         b {{selected.item.path}}
-                    button(ng-if="selected.outfiles", ng-click="kickOff($event)", ng-disabled="isRunning()", ng-class="{disabled : isRunning()}") Run
-                    button(ng-if="selected.item && !selected.outfiles", ng-click="kickOff($event)", ng-disabled="isRunning()", ng-class="{disabled : isRunning()}") Run All
+                    button(ng-if="selected.outfiles", ng-click="kickOff($event)", ng-disabled="isRunning()", ng-class="{disabled : isRunning(), btn:true, 'btn-sm':true, 'btn-success':true}")
+                        span(ng-class="{glyphicon:true, 'glyphicon-refresh':true, spinning:isRuuning()}") Run
+                    button(ng-if="selected.item && !selected.outfiles", ng-click="kickOff($event)", ng-disabled="isRunning()", ng-class="{disabled : isRunning(), btn:true, 'btn-sm':true, 'btn-success':true}")
+                        span(ng-class="{glyphicon:true, 'glyphicon-refresh':true, spinning:isRuuning()}") Run All
                 ul
                     li(ng-repeat="row in selected.outfiles")
                         a(ng-click='showContent(row.loc)') {{row.label}}
