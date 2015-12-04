@@ -1,6 +1,9 @@
 /**
  * Created by v545192 on 11/25/2015.
  */
+
+var config = require('../config');
+
 function build_error_cb(test_item, test_run, errlog, errlogfd) {
     return function (err) {
 
@@ -21,6 +24,7 @@ function build_error_cb(test_item, test_run, errlog, errlogfd) {
         test_run.end_time = new Date();
         test_run.save(function (save_err) {
             if (save_err) throw save_err;
+            config.wss.broadcast('refresh on error');
         });
     };
 }
@@ -38,6 +42,7 @@ function build_close_cb(test_item, test_run, log, logfd, errlog, errlogfd) {
 
         test_run.save(function (save_err) {
             if (save_err) throw save_err;
+            config.wss.broadcast('refresh on close');
         });
 
         require('fs').appendFile(log, "\nRC = " + code, function (err) {

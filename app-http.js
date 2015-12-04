@@ -1,11 +1,6 @@
 var express = require('express');
 
 var app = express();
-//app.set('view engine', 'jade');
-//
-//var bodyParser = require('body-parser');
-//app.use(bodyParser.json());
-//app.use(bodyParser.urlencoded({ extended: false }));
 
 var app_test = require('./apps/app-test');
 var app_index = require('./apps/app-index');

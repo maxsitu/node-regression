@@ -22,7 +22,6 @@ app.set('view engine', 'jade');
  */
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }))
-//app.use(bodyParser.json({ type: 'application/*+json' }));
 app.use(bodyParser.json());
 
 /*
@@ -30,7 +29,6 @@ app.use(bodyParser.json());
  */
 var config = require('../config');
 var tree_util = require('../util/util-tree');
-var root_label = config.label;
 var root_path = config.root;
 app.use(orm.express('sqlite://' + path.normalize(__dirname + "/../bin/app.sqlite"), {
     define: function (db, models, next) {

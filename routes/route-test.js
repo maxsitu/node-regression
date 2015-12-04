@@ -71,7 +71,9 @@ router.post('/run_test_item_by_cmd', function (req, res) {
                     ti.running = true;
                     ti.save(function (err) {
                         if (err) throw err;
+                        config.wss.broadcast('refresh on running');
                     });
+
                     // Find this newly created test_run record
                     req.models.test_run
                         .find({test_item_id: ti.test_item_id})

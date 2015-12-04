@@ -33,11 +33,12 @@ config.output = program.output;
 console.log("root: ", config.root);
 console.log("label: ", config.label);
 
+
 /**
  * Module dependencies.
  */
 
-var app = require('../app');
+var app = require('../app-http');
 var debug = require('debug')('myapp2:server');
 var http = require('http');
 
@@ -53,6 +54,31 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+
+/**
+ * Create WSS server
+ */
+WebSocketServer = require('ws').Server;
+wss = new WebSocketServer({ server: server });
+wss.on('connection', function connection(ws) {
+    ws.on('open', function open() {
+        console.log('ws open');
+    });
+    ws.on('message', function incoming(msg) {
+        console.log('received: %s', msg);
+    });
+
+    ws.send(JSON.stringify({label: config.label, root: config.root, output: config.output}));
+});
+
+wss.broadcast = function broadcast(data) {
+    wss.clients.forEach(function each(client) {
+        client.send(data);
+    });
+};
+
+config.wss = wss;
+
 /**
  * Listen on provided port, on all network interfaces.
  */
@@ -61,12 +87,6 @@ server.on('error', onError);
 server.on('listening', onListening);
 
 server.listen(port);
-
-/*
- server.listen(port);
- server.on('error', onError);
- server.on('listening', onListening);
- */
 
 /**
  * Normalize a port into a number, string, or false.
