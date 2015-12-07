@@ -57,8 +57,14 @@ router.post('/run_test_item_by_cmd', function (req, res) {
                     sendback(500);
                 }
 
+                var ti_cmd = ti.cmd;
+                var out_obj = tree_util.computeOutput(ti_cmd);
+                var output_timestamp = out_obj.output_timestamp;
+                var out_file = out_obj.stdout;
+                var err_file = out_obj.stderr;
+
                 req.models.test_run.create([
-                    {test_item_id: ti.test_item_id}
+                    {test_item_id: ti.test_item_id, output_timestamp: output_timestamp}
                 ], function (err, test_runs) {
                     if (err) {
                         body.push(
@@ -80,10 +86,7 @@ router.post('/run_test_item_by_cmd', function (req, res) {
                         .order('-test_run_id')
                         .limit(1)
                         .each(function (test_run) {
-                            var ti_cmd = ti.cmd;
-                            var out_obj = tree_util.computeOutput(ti_cmd);
-                            var out_file = out_obj.stdout;
-                            var err_file = out_obj.stderr;
+
                             try {
                                 tree_util.createOutputFile(out_file, function (log, logfd) {
                                     tree_util.createOutputFile(err_file, function (errlog, errlogfd) {

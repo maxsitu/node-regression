@@ -94,11 +94,17 @@ function computeOutputDir(test_dir) {
 }
 
 function computeOutput(cmd) {
-    var out_dir = computeOutputDir(path.dirname(cmd));
     var timestamp_str = dateformat(new Date(), "yyyymmdd_HH-MM-ss-l");
+    return computeOutputByTimestamp(cmd, timestamp_str);
+}
+
+function computeOutputByTimestamp(cmd, timestamp_str) {
+    var out_dir = computeOutputDir(path.dirname(cmd));
     var log_file = path.join(out_dir, 'test-' + timestamp_str + ".log");
     var err_file = path.join(out_dir, 'test-' + timestamp_str + ".log.err");
-    return {stdout: log_file,
+    return {
+        output_timestamp: timestamp_str,
+        stdout: log_file,
         stderr: err_file
     };
 }
@@ -138,6 +144,7 @@ module.exports = {
     spawnCommand: spawnCommand,
     computeTreeStruct: computeTreeStruct,
     computeOutput: computeOutput,
+    computeOutputByTimestamp: computeOutputByTimestamp,
     createOutputFile: createOutputFile,
     outputFiles: outputFiles
 };
