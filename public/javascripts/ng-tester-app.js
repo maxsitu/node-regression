@@ -7,7 +7,7 @@ var testerApp = angular.module('testerApp', [
     'ngWebSocket'
 ]);
 testerApp.factory('WssUpdate', ['$websocket', function ($websocket) {
-    var dataStream = $websocket("ws://wa2520sky.naeast.ad.jpmorganchase.com:3000/test");
+    var dataStream = $websocket("ws://" + window.location.hostname + ":3000/test");
     dataStream.onMessage(function (msg) {
         console.log(msg.data);
     });
