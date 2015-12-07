@@ -51,6 +51,7 @@ app.use(orm.express('sqlite://' + path.normalize(__dirname + "/../bin/app.sqlite
             test_run_id: {type: 'number', key: true},
             test_item_id: {type: 'number'},
             rc: {type: 'number'},
+            output_timestamp: {type: 'text'},
             start_time: {type: 'date', time: true},
             end_time: {type: 'date', time: true},
             modify_time: {type: 'date', time: true}
@@ -60,6 +61,7 @@ app.use(orm.express('sqlite://' + path.normalize(__dirname + "/../bin/app.sqlite
                 logInfo: function () {
                     console.log(this.test_run_id);
                     console.log(this.test_item_id);
+                    console.log(this.output_timestamp);
                     console.log(this.start_time);
                     console.log(this.end_time);
                     console.log(this.modify_time);
