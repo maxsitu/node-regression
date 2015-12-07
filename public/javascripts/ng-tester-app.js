@@ -7,11 +7,19 @@ var testerApp = angular.module('testerApp', [
     'ngWebSocket'
 ]);
 testerApp.factory('WssUpdate', ['$websocket', function ($websocket) {
+    var cb = undefined;
     var dataStream = $websocket("ws://" + window.location.hostname + ":3000/test");
     dataStream.onMessage(function (msg) {
         console.log(msg.data);
+        if (msg.data.startsWith('refresh') && cb) {
+            cb(msg.data);
+        }
     });
-    return {};
+    return {
+        onMsg: function (cb0) {
+            cb = cb0;
+        }
+    };
 }]).service('selectTestItem', ['$http', function ($http) {
     this.selected = {};
     this.select = function (selected) {
@@ -122,7 +130,10 @@ testerApp.factory('WssUpdate', ['$websocket', function ($websocket) {
             $rootScope.visibleScope = undefined;
             allnodes($scope);
 
-            $scope.WssUpdate = WssUpdate;
+
+            WssUpdate.onMsg(function (msg) {
+                allnodes($scope);
+            });
 //            $interval(function () {
 //                allnodes($scope);
 //            }, 15000);
