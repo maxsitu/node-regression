@@ -8,6 +8,7 @@
     "dependencies": {
         "angular": "^1.4.7",
         "angular-ivh-treeview": "^1.0.1",
+        "angular-websocket": "^1.0.14",
         "body-parser": "~1.13.2",
         "bootstrap": "^3.3.5",
         "commander": "^2.9.0",

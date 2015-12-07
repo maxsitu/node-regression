@@ -2,8 +2,17 @@
  * Created by Situ Ma (v545192) on 11/4/2015.
  * App script for tester page
  */
-var testerApp = angular.module('testerApp', ['ivh.treeview']);
-testerApp.service('selectTestItem', ['$http', function ($http) {
+var testerApp = angular.module('testerApp', [
+    'ivh.treeview',
+    'ngWebSocket'
+]);
+testerApp.factory('WssUpdate', ['$websocket', function ($websocket) {
+    var dataStream = $websocket("ws://wa2520sky.naeast.ad.jpmorganchase.com:3000/test");
+    dataStream.onMessage(function (msg) {
+        console.log(msg.data);
+    });
+    return {};
+}]).service('selectTestItem', ['$http', function ($http) {
     this.selected = {};
     this.select = function (selected) {
         return function (testItem) {
@@ -74,7 +83,8 @@ testerApp.service('selectTestItem', ['$http', function ($http) {
         'allnodes',
         'selectTestItem',
         'filecontent',
-        'kickoff', function ($rootScope, $scope, $interval, allnodes, selectTestItem, filecontent, kickoff) {
+        'kickoff',
+        'WssUpdate', function ($rootScope, $scope, $interval, allnodes, selectTestItem, filecontent, kickoff, WssUpdate) {
             $scope.selected = selectTestItem.selected;
 
             $scope.select = function (testItem) {
@@ -112,9 +122,10 @@ testerApp.service('selectTestItem', ['$http', function ($http) {
             $rootScope.visibleScope = undefined;
             allnodes($scope);
 
-            $interval(function () {
-                allnodes($scope);
-            }, 15000);
+            $scope.WssUpdate = WssUpdate;
+//            $interval(function () {
+//                allnodes($scope);
+//            }, 15000);
 
 
         }])
