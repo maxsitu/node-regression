@@ -6,21 +6,56 @@ var testerApp = angular.module('testerApp', [
     'ivh.treeview',
     'ngWebSocket'
 ]);
-testerApp.factory('WssUpdate', ['$websocket', function ($websocket) {
+
+testerApp.service('errorService', function () {
+    this.error = {};
+    this.publish = function (err) {
+        this.error['obj'] = err;
+    };
+    this.clear = function () {
+        delete this.error['obj'];
+    };
+}).factory('WssUpdate', ['$websocket', 'errorService', function ($websocket, errorService) {
     var cb = undefined;
-    var dataStream = $websocket("ws://" + window.location.hostname + ":3000/test");
-    dataStream.onMessage(function (msg) {
-        console.log(msg.data);
-        if (msg.data.startsWith('refresh') && cb) {
-            cb(msg.data);
-        }
-    });
+    var isHealthy = {flag: true};
+    var dataStream = undefined;
+    connect();
+    function connect() {
+        errorService.clear();
+        isHealthy.flag = true;
+
+        dataStream = $websocket("ws://" + window.location.hostname + ":3000/test");
+        dataStream.onOpen(function () {
+            console.log("Websocket connected");
+            isHealthy.flag = true;
+        });
+        dataStream.onMessage(function (msg) {
+            console.log(msg.data);
+            if (msg.data.startsWith('refresh') && cb) {
+                cb(msg.data);
+            }
+        });
+
+        dataStream.onError(function (err) {
+            isHealthy.flag = false;
+            errorService.publish(err);
+        });
+
+        dataStream.onClose(function () {
+            isHealthy.flag = false;
+            errorService.publish({msg: "WebSocket is closed"});
+        });
+
+    }
+
     return {
+        isHealthy: isHealthy,
+        connect: connect,
         onMsg: function (cb0) {
             cb = cb0;
         }
     };
-}]).service('selectTestItem', ['$http', function ($http) {
+}]).service('selectTestItem', ['$http', 'errorService', function ($http, errorService) {
     this.selected = {};
     this.select = function (selected) {
         return function (testItem) {
@@ -34,12 +69,13 @@ testerApp.factory('WssUpdate', ['$websocket', function ($websocket) {
                 },
                 function errorCallback(response) {
                     console.error(JSON.stringify(response));
+                    errorService.publish(response);
                 }
             );
         };
     }(this.selected);
 }])
-    .service('filecontent', ['$http', function ($http) {
+    .service('filecontent', ['$http', 'errorService', function ($http, errorService) {
         this.showContent = function (timestamp, scope) {
             $http.post('/test/file_content', {cmd: scope.selected.item.cmd, timestamp: timestamp})
                 .then(function successCb(response) {
@@ -47,11 +83,11 @@ testerApp.factory('WssUpdate', ['$websocket', function ($websocket) {
                     scope.errcontent = response.data.err;
                 },
                 function errorCb(response) {
-
+                    errorService.publish(response);
                 });
         };
     }])
-    .service('kickoff', ['$http', function ($http) {
+    .service('kickoff', ['$http', 'errorService', function ($http, errorService) {
         this.kickOff = function (testItem, event) {
             function setRun(node) {
                 node.running = true;
@@ -69,10 +105,10 @@ testerApp.factory('WssUpdate', ['$websocket', function ($websocket) {
                 cmd = testItem.path;
             $http.post('/test/run_test_item_by_cmd', {cmd: cmd}).then(
                 function successCallback(response) {
-
+                    errorService.publish(response);
                 },
                 function errorCallback(response) {
-
+                    errorService.publish(response);
                 }
             );
         };
@@ -85,8 +121,12 @@ testerApp.factory('WssUpdate', ['$websocket', function ($websocket) {
         'selectTestItem',
         'filecontent',
         'kickoff',
-        'WssUpdate', function ($rootScope, $scope, $interval, allnodes, selectTestItem, filecontent, kickoff, WssUpdate) {
+        'WssUpdate',
+        'errorService', function ($rootScope, $scope, $interval, allnodes, selectTestItem, filecontent, kickoff, WssUpdate, errorService) {
+            $scope.isHealthy = WssUpdate.isHealthy;
             $scope.selected = selectTestItem.selected;
+            $scope.error = errorService.error;
+            $scope.wsReconnect = WssUpdate.connect;
 
             $scope.select = function (testItem) {
                 selectTestItem.select(testItem);
@@ -127,13 +167,10 @@ testerApp.factory('WssUpdate', ['$websocket', function ($websocket) {
             WssUpdate.onMsg(function (msg) {
                 allnodes($scope);
             });
-//            $interval(function () {
-//                allnodes($scope);
-//            }, 15000);
 
 
         }])
-    .factory('allnodes', ['$http', function ($http) {
+    .factory('allnodes', ['$http', 'errorService', function ($http, errorService) {
 
         var markFailure = function (node) {
             if (node.rc && node.rc != 0) {
@@ -227,6 +264,7 @@ testerApp.factory('WssUpdate', ['$websocket', function ($websocket) {
                 },
                 function (rejection) {
                     scope.testItemList = [];
+                    errorService.push(rejection);
                     alert('Cannot get information. Check the server side!');
                 }
             );

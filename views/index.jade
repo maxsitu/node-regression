@@ -4,7 +4,15 @@ block content
     h1= title
     p Welcome to #{title}
     div(ng-app=ngAppName)
+
         div.row(ng-controller="TesterCtrl")
+            div#ws_curtain(ng-show="!isHealthy.flag")
+                div
+                    b Websocket is disconnected. Do you want to reconnect?
+                div.btn.btn-success(ng-click="wsReconnect()") Reconnect Websocket
+            div#error-pane
+                pre
+                    | {{error.obj}}
             hr
             div#test-tree.col-xs-12.col-sm5.col-md-3.col-lg-3(class="framebox")
                 input(type="text", ng-model="bagSearch" ng-hide="true")
