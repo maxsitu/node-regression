@@ -159,7 +159,7 @@ div#test-tree a {
 }
 
 div.framebox {
-    display: inline-block;
+    display: inline-grid;
     padding-right: 10px;
     /*width: 400px;*/
     overflow-x: auto;
@@ -174,8 +174,4 @@ div.framebox div {
 div.framebox button {
     position: absolute;
     right: 0px;
-}
-
-div#outfile-content.framebox {
-    width: 600px;
 }

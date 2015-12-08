@@ -6,7 +6,7 @@ block content
     div(ng-app=ngAppName)
         div.row(ng-controller="TesterCtrl")
             hr
-            div#test-tree.col-xs-12.col-sm5.col-md-3(class="framebox")
+            div#test-tree.col-xs-12.col-sm5.col-md-3.col-lg-3(class="framebox")
                 input(type="text", ng-model="bagSearch" ng-hide="true")
                 div(ivh-treeview="testItemList",ivh-treeview-filter="bagSearch")
                     script(type="text/ng-template")
@@ -14,7 +14,7 @@ block content
                             span(ivh-treeview-twistie, ivh-treeview-toggle, ng-class="{success: !node.fail, failure: node.fail, running: node.running}")
                             test-item.ivh-treeview-node-label( item-node="node")
                             div(ivh-treeview-children)
-            div#outfile-list.col-xs-12.col-sm-7.col-md-3(class="framebox")
+            div#outfile-list.col-xs-12.col-sm-7.col-md-3.col-lg-3(class="framebox")
                 div.relative
                     div(ng-if="selected.test_runs")
                         b {{selected.item.label}}
@@ -31,10 +31,16 @@ block content
                 ul
                     li(ng-repeat="row in selected.test_runs", ng-class="{failure:row.rc!=0, success:row.rc===0}")
                         a(ng-click='showContent(row.timestamp)') {{row.timestamp}}
-            div#outfile-content.col-sm-12.col-md-8(class="framebox")
-                pre {{logcontent}}
-            div#outfile-content.col-sm-12.col-md-8(class="framebox")
-                pre {{errcontent}}
+            div.col-sm-12.col-md-6.col-lg-6
+                ul.nav.nav-tabs
+                    li(role="navigation", ng-init="showLog=true", ng-class="{active:showLog}", ng-click="showLog=true")
+                        a Log File
+                    li(role="navigation", ng-class="{active:!showLog}", ng-click="showLog=false")
+                        a Error File
+                div#outfile-content.framebox(ng-show="showLog")
+                    pre {{logcontent}}
+                div#outfile-content.framebox(ng-show="!showLog")
+                    pre {{errcontent}}
 block script
     script(src='/modules/angular/angular.js')
     script(src='/modules/angular-websocket/dist/angular-websocket.js')
