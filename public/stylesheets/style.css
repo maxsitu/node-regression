@@ -175,3 +175,8 @@ div.framebox button {
     position: absolute;
     right: 0px;
 }
+
+ul.ivh-treeview.ng-scope {
+    -webkit-padding-start: 20px;
+    padding-left: 20px;
+}
