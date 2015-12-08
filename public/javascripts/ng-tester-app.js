@@ -24,34 +24,27 @@ testerApp.factory('WssUpdate', ['$websocket', function ($websocket) {
     this.selected = {};
     this.select = function (selected) {
         return function (testItem) {
-            if (selected.item && selected.item == testItem) {
-                return;
-            }
             selected.item = testItem;
-            if (testItem.cmd) {
-                $http.post('/test/output_files', {cmd: testItem.cmd}).then(
-                    function successCallback(response) {
-                        selected.outfiles = [];
-                        response.data.forEach(function (row) {
-                            selected.outfiles.push(row);
-                        });
-                    },
-                    function errorCallback(response) {
-
-                    }
-                );
-            } else {
-                selected.item = testItem;
-                delete selected['outfiles'];
-            }
+            $http.post('/test/test_runs', {ti_id: testItem.test_item_id}).then(
+                function successCallback(response) {
+                    selected.test_runs = [];
+                    response.data.forEach(function (row) {
+                        selected.test_runs.push(row);
+                    });
+                },
+                function errorCallback(response) {
+                    console.error(JSON.stringify(response));
+                }
+            );
         };
     }(this.selected);
 }])
     .service('filecontent', ['$http', function ($http) {
-        this.showContent = function (loc, scope) {
-            $http.post('/test/file_content', {file: loc})
+        this.showContent = function (timestamp, scope) {
+            $http.post('/test/file_content', {timestamp: timestamp})
                 .then(function successCb(response) {
-                    scope.filecontent = response.data.content;
+                    scope.logcontent = response.data.log;
+                    scope.errcontent = response.data.err;
                 },
                 function errorCb(response) {
 
@@ -224,7 +217,8 @@ testerApp.factory('WssUpdate', ['$websocket', function ($websocket) {
                 keys.forEach(function (key) {
                     delete scope.selected[key];
                 });
-                scope.filecontent = '';
+                scope.logcontent = '';
+                scope.errcontent = '';
             }
             $http.post('/test/find_all_test_items').then(
                 function (response) {

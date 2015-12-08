@@ -16,23 +16,25 @@ block content
                             div(ivh-treeview-children)
             div#outfile-list.col-xs-12.col-sm-7.col-md-3(class="framebox")
                 div.relative
-                    div(ng-if="selected.outfiles")
+                    div(ng-if="selected.test_runs")
                         b {{selected.item.label}}
-                        button.btn.btn-sm.btn-success(ng-if="selected.outfiles", ng-click="kickOff($event)", ng-disabled="isRunning()", ng-class="{disabled : isRunning()}")
+                        button.btn.btn-sm.btn-success(ng-if="selected.test_runs", ng-click="kickOff($event)", ng-disabled="isRunning()", ng-class="{disabled : isRunning()}")
                             span(ng-class="{glyphicon:true, 'glyphicon-refresh':true, 'glyphicon-refresh-animate':isRunning()}")
                             | Run
-                    div(ng-if="!selected.outfiles")
+                    div(ng-if="!selected.test_runs")
                         b {{selected.item.path}}
-                        button.btn.btn-sm.btn-success(ng-if="selected.item && !selected.outfiles", ng-click="kickOff($event)", ng-disabled="isRunning()", ng-class="{disabled : isRunning()}")
+                        button.btn.btn-sm.btn-success(ng-if="selected.item && !selected.test_runs", ng-click="kickOff($event)", ng-disabled="isRunning()", ng-class="{disabled : isRunning()}")
                             span(ng-class="{glyphicon:true, 'glyphicon-refresh':true, 'glyphicon-refresh-animate':isRunning()}")
                             | Run All
 
 
                 ul
-                    li(ng-repeat="row in selected.outfiles")
-                        a(ng-click='showContent(row.loc)') {{row.label}}
+                    li(ng-repeat="row in selected.test_runs", ng-class="{failure:row.rc!=0, success:row.rc===0}")
+                        a(ng-click='showContent(row.timestamp)') {{row.timestamp}}
             div#outfile-content.col-sm-12.col-md-8(class="framebox")
-                pre {{filecontent}}
+                pre {{logcontent}}
+            div#outfile-content.col-sm-12.col-md-8(class="framebox")
+                pre {{errcontent}}
 block script
     script(src='/modules/angular/angular.js')
     script(src='/modules/angular-websocket/dist/angular-websocket.js')

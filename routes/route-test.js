@@ -148,11 +148,56 @@ router.post('/output_files', function (req, res) {
 
 });
 
+router.post('/test_runs', function (req, res) {
+    console.log('/test_runs');
+    var ti_id = req.body.ti_id;
+    var promise = new Promise(function (resolve, reject) {
+        req.models.test_run.find({test_item_id: ti_id}, ['output_timestamp', 'Z'], function (err, runs) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(runs);
+            }
+        });
+    });
+    promise.then(function (runs) {
+        var result = [];
+        runs.forEach(function (run) {
+            if (run.output_timestamp)
+                result.push({timestamp: run.output_timestamp, rc: run.rc});
+        });
+        res.send(result);
+    }).catch(function (err) {
+        console.error(err.message);
+        res.status(500).send({msg: err.message});
+    });
+});
+
 router.post('/file_content', function (req, res) {
-    var file = req.body.file;
-    require('fs').readFile(file, function (err, data) {
-        if (err) throw err;
-        res.send({content: data.toString()});
+//    var file = req.body.file;
+//    require('fs').readFile(file, function (err, data) {
+//        if (err) throw err;
+//        res.send({content: data.toString()});
+//    });
+    var timestamp = req.body.timestamp;
+    var out_obj = tree_util.computeOutputByTimestamp(timestamp);
+    var out_file = out_obj.stdout;
+    var err_file = out_obj.stderr;
+    require('fs').readFile(out_file, function (err, logdata) {
+        if (err) {
+            res.status(500).send({msg: err.message});
+            return;
+        }
+        var result = {};
+        result.log = logdata.toString();
+        require('fs').readFile(err_file, function (err, errdata) {
+            if (err) {
+                res.status(500).send({msg: err.message});
+                return;
+            }
+            result.err = errdata.toString();
+            res.send(result);
+        });
     });
 
 });
