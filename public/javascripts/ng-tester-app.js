@@ -41,7 +41,7 @@ testerApp.factory('WssUpdate', ['$websocket', function ($websocket) {
 }])
     .service('filecontent', ['$http', function ($http) {
         this.showContent = function (timestamp, scope) {
-            $http.post('/test/file_content', {timestamp: timestamp})
+            $http.post('/test/file_content', {cmd: scope.selected.item.cmd, timestamp: timestamp})
                 .then(function successCb(response) {
                     scope.logcontent = response.data.log;
                     scope.errcontent = response.data.err;

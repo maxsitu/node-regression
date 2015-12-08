@@ -179,8 +179,9 @@ router.post('/file_content', function (req, res) {
 //        if (err) throw err;
 //        res.send({content: data.toString()});
 //    });
+    var cmd = req.body.cmd;
     var timestamp = req.body.timestamp;
-    var out_obj = tree_util.computeOutputByTimestamp(timestamp);
+    var out_obj = tree_util.computeOutputByTimestamp(cmd, timestamp);
     var out_file = out_obj.stdout;
     var err_file = out_obj.stderr;
     require('fs').readFile(out_file, function (err, logdata) {

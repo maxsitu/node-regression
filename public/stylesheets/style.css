@@ -66,8 +66,16 @@ div.failure.running {
     animation: moving 4s linear infinite;
 }
 
+li.success {
+    background-color: lightgreen;
+}
+
 span.success {
     color: green;
+}
+
+li.failure {
+    background-color: lightpink;
 }
 
 span.failure {
