@@ -23,15 +23,17 @@ block content
                             test-item.ivh-treeview-node-label( item-node="node")
                             div(ivh-treeview-children)
             div#outfile-list.col-xs-12.col-sm-7.col-md-3.col-lg-3(class="framebox")
-                div.relative
+                div.head
                     div(ng-if="selected.test_runs")
-                        b {{selected.item.label}}
-                        button.btn.btn-sm.btn-success(ng-if="selected.test_runs", ng-click="kickOff($event)", ng-disabled="isRunning()", ng-class="{disabled : isRunning()}")
+                        div.col-sm-9.col-md-9.col-lg-9
+                            b {{selected.item.label}}
+                        button.btn.btn-sm.btn-success.col-sm-3.col-md-3.col-lg-3(ng-if="selected.test_runs", ng-click="kickOff($event)", ng-disabled="isRunning()", ng-class="{disabled : isRunning()}")
                             span(ng-class="{glyphicon:true, 'glyphicon-refresh':true, 'glyphicon-refresh-animate':isRunning()}")
                             | Run
                     div(ng-if="!selected.test_runs")
-                        b {{selected.item.path}}
-                        button.btn.btn-sm.btn-success(ng-if="selected.item && !selected.test_runs", ng-click="kickOff($event)", ng-disabled="isRunning()", ng-class="{disabled : isRunning()}")
+                        div.col-sm-9.col-md-9.col-lg-9
+                            b {{selected.item.path}}
+                        button.btn.btn-sm.btn-success.col-sm-3.col-md-3.col-lg-3(ng-if="selected.item && !selected.test_runs", ng-click="kickOff($event)", ng-disabled="isRunning()", ng-class="{disabled : isRunning()}")
                             span(ng-class="{glyphicon:true, 'glyphicon-refresh':true, 'glyphicon-refresh-animate':isRunning()}")
                             | Run All
 

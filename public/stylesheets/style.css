@@ -167,18 +167,18 @@ div.framebox {
     max-height: 700px;
 }
 
-div.framebox div {
-    position: relative;
+div.framebox div.head {
+    height: 30px;
 }
 
-div.framebox button {
-    position: absolute;
-    right: 0px;
+div.framebox div.head div div {
+    bottom: 0;
+    padding-left: 0;
 }
 
 ul.ivh-treeview.ng-scope {
     -webkit-padding-start: 20px;
-    padding-left: 20px;
+    padding-left: 20;
 }
 
 div#ws_curtain {
